@@ -7,6 +7,7 @@ import { FrontmatterHandler } from "./src/frontmatter.js";
 import { PathFilter } from "./src/pathfilter.js";
 import { SearchService } from "./src/search.js";
 import { TemplateHandler } from "./src/templates.js";
+import { BacklinksService } from "./src/backlinks.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -57,6 +58,7 @@ const searchService = new SearchService(vaultPath, pathFilter);
 // Config path is in the same directory as the server
 const configPath = join(__dirname, '../config.json');
 const templateHandler = new TemplateHandler(vaultPath, configPath);
+const backlinksService = new BacklinksService(vaultPath, pathFilter);
 const server = new Server({
     name: "mcp-obsidian",
     version: VERSION
@@ -390,6 +392,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     },
                     required: ["title", "template"]
                 }
+            },
+            {
+                name: "find_backlinks",
+                description: "Find all notes that link to a target note using [[wikilink]] syntax. Returns notes sorted by number of links (most links first), with context showing where the links appear.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        noteName: {
+                            type: "string",
+                            description: "Name of the target note to find backlinks for (with or without .md extension)"
+                        }
+                    },
+                    required: ["noteName"]
+                }
             }
         ]
     };
@@ -641,6 +657,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                                 template: trimmedArgs.template,
                                 message: `Successfully created note from template '${trimmedArgs.template}': ${notePath}`
                             }, null, 2)
+                        }
+                    ]
+                };
+            }
+            case "find_backlinks": {
+                const result = await backlinksService.findBacklinks(trimmedArgs.noteName);
+                return {
+                    content: [
+                        {
+                            type: "text",
+                            text: JSON.stringify(result, null, 2)
                         }
                     ]
                 };
