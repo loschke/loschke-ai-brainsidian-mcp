@@ -1,209 +1,158 @@
-# Changelog
+# Changelog - Brainsidian MCP
 
-All notable changes to this project will be documented in this file.
+All notable changes to the Brainsidian project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.3] - 2025-10-10
+## [1.0.0] - 2025-10-10
 
-### Added
-- **Token optimization**: New `prettyPrint` parameter for all JSON responses (default: false)
-  - Applies to: `read_note`, `search_notes`, `list_directory`, `read_multiple_notes`, `get_notes_info`, `get_frontmatter`
-  - Reduces token usage by ~30-40% when disabled
+### Added - Phase 1: Core Setup ✅
 
-### Changed
-- **Response optimization**: Removed redundant fields from responses to reduce token count
-  - `read_note`: Removed redundant `path` field, shortened `frontmatter` to `fm`
-  - `list_directory`: Shortened `directories` to `dirs`, removed redundant `path` field
-  - `search_notes`: Removed redundant `query` and `resultCount` wrapper
-  - `read_multiple_notes`: Shortened fields to `ok`/`err`, removed redundant summary
-  - `get_notes_info`: Returns array directly without wrapper
-  - `get_frontmatter`: Returns frontmatter directly without wrapper
-- **Search results**: Minified field names for 40-60% token reduction
-  - `path` → `p`
-  - `title` → `t`
-  - `excerpt` → `ex`
-  - `matchCount` → `mc`
-  - `lineNumber` → `ln`
-- **Search excerpt**: Reduced context from 50 to 21 characters before/after match
-- **JSON formatting**: Default to compact (no pretty-printing) to save tokens
+#### Project Setup
+- Forked and adapted bitbonsai/mcp-obsidian as foundation
+- Initialized new Git repository for Brainsidian
+- Created comprehensive README.md with project vision
+- Added config.json for vault and template configuration
+- Set up Claude Desktop integration
 
-### Performance
-- **Overall token reduction**: 40-60% fewer tokens in typical responses
-- **Search operations**: Significantly faster with smaller excerpts and minified fields
-- **API responses**: More efficient for high-volume operations
+#### Features (Inherited from bitbonsai)
+- **read_note**: Read notes with parsed frontmatter
+- **write_note**: Write/append/prepend content to notes
+- **list_directory**: List files and folders in vault
+- **delete_note**: Safely delete notes with confirmation
+- **move_note**: Move or rename notes
+- **search_notes**: Full-text search across vault (content + frontmatter)
+- **read_multiple_notes**: Batch read up to 10 notes
+- **get_frontmatter**: Extract only frontmatter metadata
+- **update_frontmatter**: Update note metadata
+- **manage_tags**: Add, remove, or list tags
+- **get_notes_info**: Get file metadata without content
 
-## [0.6.1] - 2025-10-09
+#### Security
+- Path traversal protection with vault boundary validation
+- Symbolic link safety checks
+- Automatic filtering of system files (.obsidian, .git)
+- YAML frontmatter validation before writing
 
-### Added
-- **Comprehensive patch_note testing**: Added 16 tests covering all edge cases
-  - Single and multiple occurrence handling
-  - Empty string validation
-  - Special character handling (regex chars treated literally)
-  - Whitespace preservation (tabs and spaces)
-  - Case sensitivity verification
-  - Performance testing (100+ replacements)
-  - Path handling with spaces
-- **Test reorganization**: Moved tests from `tests/` to `src/` for better co-location
-  - Merged filesystem, patch, and integration tests into single file
-  - All 38 tests passing
+#### Performance
+- Token-optimized responses (40-60% reduction)
+- Minified field names for API responses
+- Efficient batch operations
 
-### Fixed
-- **patch_note validation**: Added validation for empty `oldString` and `newString` parameters
-- **Error messages**: Improved error messages for empty string parameters
+#### Documentation
+- Complete README with installation and usage guide
+- Product Requirements Document (docs/prd-brainsidian.md)
+- Setup notes (README-BRAINSIDIAN.md)
+- Configuration examples
 
-### Changed
-- **Test structure**: Reorganized test files to be co-located with source files
-  - `src/filesystem.test.ts` (30 tests)
-  - `src/frontmatter.test.ts` (8 tests)
+### Configuration
+- Vault Path: Configured for local DigitalBrain vault
+- Templates: _Templates folder integration prepared
+- Tag System: Configured wissensbereiche, outputTypen, status tags
+- MCP Server: "brainsidian" configured in Claude Desktop
 
-## [0.6.0] - 2025-10-08
-
-### Added
-- **patch_note tool**: Efficient partial note updates by replacing specific strings
-  - Replace single or multiple occurrences
-  - Multiline string support
-  - Safety checks for multiple matches
-  - Preserves frontmatter
-  - More efficient than rewriting entire files
-
-## [0.5.4] - 2025-09-23
-
-### Fixed
-- **YAML frontmatter operations**: Fixed critical "yaml.dump is not a function" errors in `write_note`, `update_frontmatter`, and `manage_tags` tools
-- **Dependency cleanup**: Removed js-yaml dependency entirely, now using gray-matter for all YAML operations
-- **list_directory**: Fixed handling of "." path to properly return root directory contents including both files and directories
-
-### Added
-- **Comprehensive test suite**: Added 22 integration tests covering all frontmatter operations
-- **Test coverage**: Added tests for write_note with frontmatter, append/prepend modes, update operations, and tag management
-- **Error validation**: Added edge case testing for tag management and frontmatter validation
-
-### Changed
-- **YAML handling**: Migrated all YAML serialization to use gray-matter consistently
-- **Validation**: Updated frontmatter validation to use `matter.stringify()` instead of `yaml.dump()`
-- **Package.json**: Updated main field to point to correct compiled output
-
-## [0.5.1] - 2025-09-23
-
-### Fixed
-- **Package configuration**: Fixed package.json main field to point to `dist/server.js`
-- **Executable permissions**: Fixed executable permissions for compiled JavaScript output
-- **Usage message**: Fixed usage message in compiled JavaScript to show correct npm command
-- **Claude Desktop compatibility**: Fixed "env: bun: No such file or directory" error
-
-### Added
-- **TypeScript compilation**: Added proper TypeScript build process for npm distribution
-- **Distribution files**: Added compiled JavaScript files to dist/ directory
-
-## [0.5.0] - 2025-09-23
-
-### Changed
-- **🚨 BREAKING**: Complete migration from Bun to npm/Node.js runtime
-- **Runtime**: Replaced all Bun APIs with Node.js equivalents
-- **Package manager**: Converted from Bun to npm package management
-- **Build system**: Added TypeScript compilation for distribution
-
-### Added
-- **Node.js compatibility**: Full Node.js runtime support (v18.0.0+)
-- **npm distribution**: Published as npm package `@mauricio.wolff/mcp-obsidian`
-- **TypeScript tooling**: Added tsx for development and tsc for building
-- **Vitest testing**: Replaced Bun test with Vitest test runner
-
-### Removed
-- **Bun dependencies**: Removed all Bun-specific APIs and runtime dependencies
-- **Bun.file(), Bun.write()**: Replaced with Node.js fs functions
-- **Bun.Glob()**: Replaced with recursive directory scanning
-
-## [0.3.0] - 2025-09-23
-
-### Added
-- **Write modes**: Added `append`, `prepend`, and `overwrite` modes for flexible content editing
-- **Tag management**: Complete tag management system with add, remove, and list operations
-- **get_frontmatter**: New tool for metadata-only extraction without reading full content
-- **Path trimming**: Automatic whitespace handling in path inputs
-- **API documentation**: Complete documentation for all 11 MCP methods
-- **Quick Start guide**: 5-minute setup guide for immediate use
-- **Multi-platform support**: Claude Desktop, Claude Code, ChatGPT Desktop, IntelliJ IDEA support
-
-### Changed
-- **Package scope**: Migrated to scoped npm package `@mauricio.wolff/mcp-obsidian`
-- **Documentation**: Made README AI-agnostic with comprehensive examples
-- **Version consistency**: Synchronized version across all files
-
-### Fixed
-- **API documentation**: Added missing docs for search_notes, move_note, read_multiple_notes, update_frontmatter, get_notes_info
-- **MCP inspector**: Fixed command syntax for testing
-
-## [0.2.x] - 2025-09-21/22
-
-### Added
-- **delete_note**: Safe deletion with confirmation requirement
-- **Path security**: Enhanced path validation and traversal protection
-- **Error handling**: Improved error messages and validation
-
-### Changed
-- **Project name**: Renamed from mcp-fs-obsidian to mcp-obsidian
-- **Bun optimization**: Pure Bun implementation with native APIs
-- **Documentation**: Significantly improved README with examples
-
-### Fixed
-- **Command usage**: Fixed README to use bunx for end users
-- **File filtering**: Added .tmp files to gitignore
-
-## [0.1.0] - 2025-09-21
-
-### Added
-- **Initial release**: Basic MCP server for Obsidian vault access
-- **Core tools**: read_note, write_note, list_directory, search_notes
-- **Security**: Path filtering and vault boundary protection
-- **Frontmatter**: YAML frontmatter parsing and validation
-- **MCP protocol**: Model Context Protocol server implementation
-
-### Features
-- Obsidian vault integration
-- Safe file operations
-- Frontmatter handling
-- Directory listing
-- Content search
+### Technical Details
+- **Runtime**: Node.js 18.0.0+
+- **Language**: TypeScript 5+
+- **Dependencies**: 243 packages
+- **Build System**: TypeScript compiler (tsc)
+- **Tests**: Vitest (76 tests inherited)
 
 ---
 
-## Migration Notes
+## [1.1.0] - 2025-10-10 - Phase 2: Template Support ✅
 
-### From Bun to Node.js (v0.5.0)
-If you were using the Bun version, update your configuration:
+### Added
+- **Template-Handler** (`src/templates.ts`)
+  - Load templates from `_Templates` folder in vault
+  - Automatic placeholder replacement: `{{date}}`, `{{datetime}}`, `{{title}}`, `{{tags}}`
+  - Template validation and listing
+  - Config loading from project root
+- **create_note_from_template MCP Tool**
+  - Create notes from 4 templates: quick-note, wissensnotiz, projekt, content
+  - Smart filename sanitization
+  - Optional folder parameter
+  - Optional additional content append
+- **date-fns dependency** for date formatting
 
-**Old (Bun):**
-```json
-{
-  "command": "bunx",
-  "args": ["mcp-obsidian", "/path/to/vault"]
-}
-```
+### Fixed
+- Windows compatibility for config.json path loading
+- Explicit configPath in server.ts using __dirname
 
-**New (Node.js):**
-```json
-{
-  "command": "npx",
-  "args": ["@mauricio.wolff/mcp-obsidian@latest", "/path/to/vault"]
-}
-```
+### Technical Details
+- 3 commits on feature/phase-2-templates branch
+- Zero breaking changes - all existing tools functional
+- Backward-compatible implementation
 
-### Package Name Change (v0.3.0)
-The package was renamed and moved to a scoped package for better npm distribution.
+**Time Invested**: 2 hours
 
-## Security Updates
+---
 
-All versions include security measures:
-- Path traversal protection
-- File type filtering
-- YAML validation
-- Vault boundary enforcement
+## [Unreleased] - Phase 2: Tag Validation (Optional)
 
-## Support
+### Planned
+- [ ] Tag validation against config.json
+- [ ] Typo suggestions for tags (Levenshtein distance)
+- [ ] Integration with manage_tags tool
 
-- **Node.js**: v18.0.0 or later required
-- **MCP Clients**: Claude Desktop, Claude Code, ChatGPT Desktop, IntelliJ IDEA 2025.1+
-- **File Types**: .md, .markdown, .txt files supported
+**Estimated Time**: 1 hour
+
+---
+
+## [1.2.0] - 2025-10-10 - Phase 3 Quick Win: Backlinks ✅
+
+### Added
+- **BacklinksService** (`src/backlinks.ts`)
+  - Find all notes linking to a target note
+  - Support for wikilink syntax: `[[note]]` and `[[note|display text]]`
+  - Regex-based pattern matching with escaped special characters
+  - Recursive vault scanning with path filtering
+- **find_backlinks MCP Tool**
+  - Returns backlinks sorted by link count (most links first)
+  - Shows context with line numbers for each match
+  - Extracts note titles from frontmatter or filename
+  - Total link count across all backlinks
+
+### Technical Details
+- Integrated with existing PathFilter for security
+- Efficient file scanning (skips system files)
+- Graceful error handling for unreadable files
+- Clean TypeScript implementation
+
+**Time Invested**: 1 hour
+
+---
+
+## [Unreleased] - Phase 3: Intelligence Features (Remaining)
+
+### Planned
+- [ ] suggest_links: AI-powered link recommendations (FR-3.1)
+- [ ] health_check: Vault analysis and improvements (FR-3.3)
+- [ ] Graph analysis capabilities
+
+**Estimated Time**: 3-5 hours
+
+---
+
+## Technical Debt & Improvements
+
+### To Consider
+- [ ] Migrate from bitbonsai fork to independent implementation
+- [ ] Add integration tests for Claude Desktop
+- [ ] Implement embedding-based link suggestions
+- [ ] Add vault statistics dashboard
+- [ ] Support for multiple vaults
+
+---
+
+## Credits
+
+**Based on**: [bitbonsai/mcp-obsidian](https://github.com/bitbonsai/mcp-obsidian) v0.6.4
+**Author**: AI Generalist
+**Created**: 2025-10-10
+**License**: MIT
+
+---
+
+[1.0.0]: https://github.com/YOUR_USERNAME/brainsidian-mcp/releases/tag/v1.0.0

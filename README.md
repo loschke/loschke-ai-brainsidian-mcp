@@ -235,9 +235,10 @@ Special thanks to:
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/brainsidian-mcp/issues)
+- **Issues**: [GitHub Issues](https://github.com/loschke/loschke-ai-brainsidian-mcp/issues)
 - **PRD**: See `docs/prd-brainsidian.md` for detailed specifications
-- **Changes**: See `README-BRAINSIDIAN.md` for setup notes
+- **Setup**: See `SETUP.md` for detailed setup notes
+- **Changelog**: See `CHANGELOG.md` for version history
 
 ---
 
