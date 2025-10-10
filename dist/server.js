@@ -8,6 +8,7 @@ import { PathFilter } from "./src/pathfilter.js";
 import { SearchService } from "./src/search.js";
 import { TemplateHandler } from "./src/templates.js";
 import { BacklinksService } from "./src/backlinks.js";
+import { ValidationService } from "./src/validation.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -613,11 +614,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     operation: trimmedArgs.operation,
                     tags: trimmedArgs.tags
                 });
+                // Add tag validation warnings for 'add' operation
+                let warnings = [];
+                if (trimmedArgs.operation === 'add' && trimmedArgs.tags && trimmedArgs.tags.length > 0) {
+                    try {
+                        const config = await templateHandler.loadConfig();
+                        const validationService = new ValidationService(config);
+                        const validation = validationService.validateTags(trimmedArgs.tags);
+                        if (!validation.valid && validation.suggestions.length > 0) {
+                            warnings = validation.suggestions.map(s => `Tag '${s.invalid}' not in config. Did you mean: ${s.didYouMean.join(', ')}?`);
+                        }
+                    }
+                    catch {
+                        // Silently skip validation if config can't be loaded
+                    }
+                }
                 return {
                     content: [
                         {
                             type: "text",
-                            text: JSON.stringify(result, null, 2)
+                            text: JSON.stringify({
+                                ...result,
+                                warnings: warnings.length > 0 ? warnings : undefined
+                            }, null, 2)
                         }
                     ],
                     isError: !result.success
