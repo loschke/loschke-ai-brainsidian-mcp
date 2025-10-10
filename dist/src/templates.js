@@ -4,8 +4,11 @@ import { format } from 'date-fns';
 export class TemplateHandler {
     config = null;
     vaultPath;
-    constructor(vaultPath) {
+    configPath;
+    constructor(vaultPath, configPath) {
         this.vaultPath = vaultPath;
+        // Default: look for config.json in project root (relative to this file)
+        this.configPath = configPath || path.join(path.dirname(path.dirname(new URL(import.meta.url).pathname)), 'config.json');
     }
     /**
      * Load config.json from project root
@@ -15,15 +18,13 @@ export class TemplateHandler {
             return this.config;
         }
         try {
-            // Config is in project root, not in vault
-            const configPath = path.join(process.cwd(), 'config.json');
-            const configContent = await fs.readFile(configPath, 'utf-8');
+            const configContent = await fs.readFile(this.configPath, 'utf-8');
             const config = JSON.parse(configContent);
             this.config = config;
             return config;
         }
         catch (error) {
-            throw new Error(`Failed to load config.json: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            throw new Error(`Failed to load config.json from ${this.configPath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
     /**

@@ -54,7 +54,9 @@ const pathFilter = new PathFilter();
 const frontmatterHandler = new FrontmatterHandler();
 const fileSystem = new FileSystemService(vaultPath, pathFilter, frontmatterHandler);
 const searchService = new SearchService(vaultPath, pathFilter);
-const templateHandler = new TemplateHandler(vaultPath);
+// Config path is in the same directory as the server
+const configPath = join(__dirname, '../config.json');
+const templateHandler = new TemplateHandler(vaultPath, configPath);
 const server = new Server({
     name: "mcp-obsidian",
     version: VERSION
