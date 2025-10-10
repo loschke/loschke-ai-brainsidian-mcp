@@ -26,12 +26,12 @@ Brainsidian connects Claude Desktop to your local Obsidian vault, enabling intel
   - content (blog/video/podcast)
 - **Automatic Placeholder Replacement**: `{{date}}`, `{{title}}`, `{{tags}}`
 - **Smart Filename Sanitization**: Automatic handling of invalid characters
+- **Tag Validation**: Typo detection with smart suggestions (e.g., ai-koding → ai-coding)
 
 ### Current (Phase 3 - In Progress) 🔄
 - **Backlink Discovery** ✅: Find all notes linking to a target note
 
 ### Coming Soon 📅
-- **Tag Validation** (Phase 2+): Enforce your tag system with auto-suggestions
 - **Link Suggestions** (Phase 3): AI-powered recommendations for note connections
 - **Vault Health Check** (Phase 3): Analyze and improve your knowledge base
 
@@ -208,7 +208,7 @@ npm run build
 - [x] Placeholder replacement ({{date}}, {{title}}, {{tags}})
 - [x] Smart note creation with 4 templates
 - [x] Filename sanitization
-- [ ] Tag validation against config (optional)
+- [x] Tag validation with typo suggestions
 
 ### Phase 3: Intelligence Features 🔄
 - [x] Backlink discovery (find_backlinks)
