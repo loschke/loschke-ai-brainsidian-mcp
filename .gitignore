@@ -127,3 +127,6 @@ bun.lockb
 npm-debug.log*
 .npm
 .npmrc
+
+# Local configuration (contains personal vault paths)
+config.json

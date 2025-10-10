@@ -1,5 +1,5 @@
 {
-  "vaultPath": "G:\\Meine Ablage\\DigitalBrain",
+  "vaultPath": "/path/to/your/obsidian/vault",
   "templatesPath": "_Templates",
   "templates": {
     "quick-note": "Template - Quick Note.md",
