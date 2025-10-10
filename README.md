@@ -18,12 +18,20 @@ Brainsidian connects Claude Desktop to your local Obsidian vault, enabling intel
 - **Path Security**: Automatic filtering of system files and validation
 - **Token-Optimized**: 40-60% smaller API responses for better performance
 
+### Current (Phase 2) ✅
+- **Template Support**: Create notes from 4 customizable templates
+  - quick-note (80% of notes)
+  - wissensnotiz (knowledge/concepts)
+  - projekt (projects/clients)
+  - content (blog/video/podcast)
+- **Automatic Placeholder Replacement**: `{{date}}`, `{{title}}`, `{{tags}}`
+- **Smart Filename Sanitization**: Automatic handling of invalid characters
+
 ### Coming Soon 🔄
-- **Template Support** (Phase 2): Create notes from customizable templates
-- **Tag Validation**: Enforce your tag system with auto-suggestions
+- **Tag Validation** (Phase 2+): Enforce your tag system with auto-suggestions
 - **Backlink Discovery** (Phase 3): Find all notes linking to a target
-- **Link Suggestions**: AI-powered recommendations for note connections
-- **Vault Health Check**: Analyze and improve your knowledge base
+- **Link Suggestions** (Phase 3): AI-powered recommendations for note connections
+- **Vault Health Check** (Phase 3): Analyze and improve your knowledge base
 
 ## 📦 Installation
 
@@ -88,6 +96,7 @@ Edit `claude_desktop_config.json`:
 9. **update_frontmatter** - Update note metadata
 10. **manage_tags** - Add, remove, or list tags
 11. **get_notes_info** - Get file metadata without content
+12. **create_note_from_template** ✨ - Create notes from templates with auto-placeholders
 
 ### Example Conversations
 
@@ -100,6 +109,11 @@ Edit `claude_desktop_config.json`:
 - "Create a new note with today's date"
 - "Append this task to my daily note"
 - "Add tags 'project' and 'urgent' to my task note"
+
+**Template-Based Creation:** ✨
+- "Create a quick note titled 'Meeting Notes' with tags ai-strategy"
+- "Create a wissensnotiz about 'MCP Architecture' in folder '03-Fachwissen'"
+- "Create a content note for 'Blog: AI Templates' with tags blog, ai-tools"
 
 **Knowledge Management:**
 - "Show me all notes tagged with 'ai-coding'"
@@ -181,11 +195,12 @@ npm run build
 - [x] Tag management
 - [x] Batch operations
 
-### Phase 2: Templates & Validation 🔄
-- [ ] Template loading and application
-- [ ] Tag validation against config
-- [ ] Placeholder replacement
-- [ ] Smart note creation
+### Phase 2: Templates & Validation ✅
+- [x] Template loading and application
+- [x] Placeholder replacement ({{date}}, {{title}}, {{tags}})
+- [x] Smart note creation with 4 templates
+- [x] Filename sanitization
+- [ ] Tag validation against config (optional)
 
 ### Phase 3: Intelligence Features 📅
 - [ ] Backlink discovery
