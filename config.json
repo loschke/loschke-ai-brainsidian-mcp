@@ -1,0 +1,37 @@
+{
+  "vaultPath": "G:\\Meine Ablage\\DigitalBrain",
+  "templatesPath": "_Templates",
+  "templates": {
+    "quick-note": "Template - Quick Note.md",
+    "wissensnotiz": "Template - Wissensnotiz.md",
+    "projekt": "Template - Projekt.md",
+    "content": "Template - Content.md"
+  },
+  "defaultTags": {
+    "wissensbereiche": [
+      "ai-essentials",
+      "ai-coding",
+      "ai-media",
+      "ai-automation",
+      "ai-strategy",
+      "ai-tools",
+      "ai-transformation"
+    ],
+    "outputTypen": [
+      "blog",
+      "saas",
+      "vortrag",
+      "video-kurs",
+      "podcast",
+      "documentation",
+      "kunden-projekt"
+    ],
+    "status": [
+      "idee",
+      "in-arbeit",
+      "fertig",
+      "veröffentlicht",
+      "archiviert"
+    ]
+  }
+}

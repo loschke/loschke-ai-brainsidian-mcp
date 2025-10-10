@@ -1,0 +1,67 @@
+{
+  "name": "@mauricio.wolff/mcp-obsidian",
+  "version": "0.6.4",
+  "description": "Universal AI bridge for Obsidian vaults - connect any MCP-compatible assistant",
+  "author": "bitbonsai",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "mcp-obsidian": "./dist/server.js",
+    "@mauricio.wolff/mcp-obsidian": "./dist/server.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "tsx server.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test",
+    "prepack": "npm install",
+    "publish:dry": "npm publish --dry-run",
+    "publish:beta": "npm publish --tag beta",
+    "publish:latest": "npm publish"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitbonsai/mcp-obsidian.git"
+  },
+  "keywords": [
+    "mcp",
+    "obsidian",
+    "model-context-protocol",
+    "universal",
+    "ai-bridge",
+    "mcp-server",
+    "claude",
+    "chatgpt",
+    "ai",
+    "knowledge-management",
+    "pkm",
+    "vault",
+    "notes",
+    "markdown",
+    "future-proof",
+    "open-standard"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
