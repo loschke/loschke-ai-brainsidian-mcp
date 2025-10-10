@@ -27,9 +27,11 @@ Brainsidian connects Claude Desktop to your local Obsidian vault, enabling intel
 - **Automatic Placeholder Replacement**: `{{date}}`, `{{title}}`, `{{tags}}`
 - **Smart Filename Sanitization**: Automatic handling of invalid characters
 
-### Coming Soon 🔄
+### Current (Phase 3 - In Progress) 🔄
+- **Backlink Discovery** ✅: Find all notes linking to a target note
+
+### Coming Soon 📅
 - **Tag Validation** (Phase 2+): Enforce your tag system with auto-suggestions
-- **Backlink Discovery** (Phase 3): Find all notes linking to a target
 - **Link Suggestions** (Phase 3): AI-powered recommendations for note connections
 - **Vault Health Check** (Phase 3): Analyze and improve your knowledge base
 
@@ -97,6 +99,7 @@ Edit `claude_desktop_config.json`:
 10. **manage_tags** - Add, remove, or list tags
 11. **get_notes_info** - Get file metadata without content
 12. **create_note_from_template** ✨ - Create notes from templates with auto-placeholders
+13. **find_backlinks** ✨ - Discover all notes linking to a target note
 
 ### Example Conversations
 
@@ -119,6 +122,11 @@ Edit `claude_desktop_config.json`:
 - "Show me all notes tagged with 'ai-coding'"
 - "Find all notes in the Projects folder"
 - "What's in my research note's frontmatter?"
+
+**Knowledge Graph:** ✨
+- "Find all notes that link to 'Chain-of-Thought'"
+- "Show me backlinks for my MCP Architecture note"
+- "Which notes reference my Prompt Engineering guide?"
 
 ## 🏗️ Project Structure
 
@@ -202,8 +210,8 @@ npm run build
 - [x] Filename sanitization
 - [ ] Tag validation against config (optional)
 
-### Phase 3: Intelligence Features 📅
-- [ ] Backlink discovery
+### Phase 3: Intelligence Features 🔄
+- [x] Backlink discovery (find_backlinks)
 - [ ] Link suggestions (AI-powered)
 - [ ] Vault health check
 - [ ] Graph analysis
