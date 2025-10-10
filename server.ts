@@ -10,6 +10,7 @@ import { FileSystemService } from "./src/filesystem.js";
 import { FrontmatterHandler } from "./src/frontmatter.js";
 import { PathFilter } from "./src/pathfilter.js";
 import { SearchService } from "./src/search.js";
+import { TemplateHandler } from "./src/templates.js";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -64,6 +65,7 @@ const pathFilter = new PathFilter();
 const frontmatterHandler = new FrontmatterHandler();
 const fileSystem = new FileSystemService(vaultPath, pathFilter, frontmatterHandler);
 const searchService = new SearchService(vaultPath, pathFilter);
+const templateHandler = new TemplateHandler(vaultPath);
 
 const server = new Server({
   name: "mcp-obsidian",
@@ -366,6 +368,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["path", "operation"]
         }
+      },
+      {
+        name: "create_note_from_template",
+        description: "Create a new note from a template with automatic placeholder replacement. Templates: 'quick-note' (80% of notes), 'wissensnotiz' (knowledge/concepts), 'projekt' (projects/clients), 'content' (blog/video/podcast)",
+        inputSchema: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              description: "Title of the note (used for filename and {{title}} placeholder)"
+            },
+            template: {
+              type: "string",
+              enum: ["quick-note", "wissensnotiz", "projekt", "content"],
+              description: "Template to use"
+            },
+            folder: {
+              type: "string",
+              description: "Folder path relative to vault root (optional, defaults based on template)",
+              default: ""
+            },
+            tags: {
+              type: "array",
+              items: { type: "string" },
+              description: "Tags to add to the note (optional)"
+            },
+            content: {
+              type: "string",
+              description: "Additional content to append after template (optional)"
+            }
+          },
+          required: ["title", "template"]
+        }
       }
     ]
   };
@@ -600,6 +635,51 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
           ],
           isError: !result.success
+        };
+      }
+
+      case "create_note_from_template": {
+        // Load template
+        const template = await templateHandler.loadTemplate(trimmedArgs.template);
+        
+        // Prepare placeholders
+        const placeholders = {
+          title: trimmedArgs.title,
+          tags: trimmedArgs.tags || []
+        };
+        
+        // Replace placeholders
+        let noteContent = templateHandler.replaceTemplatePlaceholders(template, placeholders);
+        
+        // Append additional content if provided
+        if (trimmedArgs.content) {
+          noteContent += '\n\n' + trimmedArgs.content;
+        }
+        
+        // Determine path
+        const folder = trimmedArgs.folder || '';
+        const filename = trimmedArgs.title.replace(/[/\\?%*:|"<>]/g, '-') + '.md';
+        const notePath = folder ? `${folder}/${filename}` : filename;
+        
+        // Write note using existing fileSystem
+        await fileSystem.writeNote({
+          path: notePath,
+          content: noteContent,
+          mode: 'overwrite'
+        });
+        
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                success: true,
+                path: notePath,
+                template: trimmedArgs.template,
+                message: `Successfully created note from template '${trimmedArgs.template}': ${notePath}`
+              }, null, 2)
+            }
+          ]
         };
       }
 
