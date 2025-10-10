@@ -61,16 +61,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased] - Phase 2: Templates & Validation
+## [1.1.0] - 2025-10-10 - Phase 2: Template Support ✅
+
+### Added
+- **Template-Handler** (`src/templates.ts`)
+  - Load templates from `_Templates` folder in vault
+  - Automatic placeholder replacement: `{{date}}`, `{{datetime}}`, `{{title}}`, `{{tags}}`
+  - Template validation and listing
+  - Config loading from project root
+- **create_note_from_template MCP Tool**
+  - Create notes from 4 templates: quick-note, wissensnotiz, projekt, content
+  - Smart filename sanitization
+  - Optional folder parameter
+  - Optional additional content append
+- **date-fns dependency** for date formatting
+
+### Fixed
+- Windows compatibility for config.json path loading
+- Explicit configPath in server.ts using __dirname
+
+### Technical Details
+- 3 commits on feature/phase-2-templates branch
+- Zero breaking changes - all existing tools functional
+- Backward-compatible implementation
+
+**Time Invested**: 2 hours
+
+---
+
+## [Unreleased] - Phase 2: Tag Validation (Optional)
 
 ### Planned
-- [ ] Template loading system (src/templates.ts)
-- [ ] Template placeholder replacement ({{date}}, {{title}})
-- [ ] create_note_from_template tool
 - [ ] Tag validation against config.json
 - [ ] Typo suggestions for tags (Levenshtein distance)
+- [ ] Integration with manage_tags tool
 
-**Estimated Time**: 2-3 hours
+**Estimated Time**: 1 hour
 
 ---
 
