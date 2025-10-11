@@ -29,23 +29,42 @@ export class TemplateHandler {
     }
     /**
      * Load a template file from the vault's _Templates folder
+     * Supports multiple naming patterns for flexibility
      */
     async loadTemplate(templateName) {
         const config = await this.loadConfig();
-        // Check if template exists in config
-        if (!config.templates[templateName]) {
-            const available = Object.keys(config.templates).join(', ');
-            throw new Error(`Unknown template: ${templateName}. Available templates: ${available}`);
+        const templatesDir = path.join(this.vaultPath, config.templatesPath);
+        // Try multiple naming patterns (in priority order)
+        const patterns = [
+            config.templates[templateName], // 1. User's config (highest priority)
+            `Template - ${this.capitalize(templateName)}.md`, // 2. Current convention
+            `template-${templateName}.md`, // 3. Lowercase-dash (common convention)
+            `${templateName}.md` // 4. Simple name
+        ];
+        // Try each pattern
+        for (const pattern of patterns) {
+            if (!pattern)
+                continue;
+            const templatePath = path.join(templatesDir, pattern);
+            try {
+                await fs.access(templatePath);
+                const content = await fs.readFile(templatePath, 'utf-8');
+                return content;
+            }
+            catch {
+                continue; // Try next pattern
+            }
         }
-        const templateFileName = config.templates[templateName];
-        const templatePath = path.join(this.vaultPath, config.templatesPath, templateFileName);
-        try {
-            const content = await fs.readFile(templatePath, 'utf-8');
-            return content;
-        }
-        catch (error) {
-            throw new Error(`Failed to load template ${templateName} from ${templatePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        }
+        // Not found - provide helpful error with available templates
+        const available = await this.listActualTemplateFiles(templatesDir);
+        const patternsTriedStr = patterns.filter(Boolean).join(', ');
+        throw new Error(`Template "${templateName}" not found in ${templatesDir}\n\n` +
+            `Patterns tried:\n  ${patternsTriedStr}\n\n` +
+            `Available template files:\n  ${available.join('\n  ')}\n\n` +
+            `Supported naming conventions:\n` +
+            `  - Template - [Name].md (e.g., Template - Content.md)\n` +
+            `  - template-[name].md (e.g., template-content.md)\n` +
+            `  - [name].md (e.g., content.md)`);
     }
     /**
      * Replace placeholders in template content
@@ -127,5 +146,28 @@ export class TemplateHandler {
             path: templatePath,
             exists
         };
+    }
+    /**
+     * Capitalize template name (e.g., "quick-note" → "Quick-Note")
+     */
+    capitalize(str) {
+        return str
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('-');
+    }
+    /**
+     * List actual template files in the directory
+     */
+    async listActualTemplateFiles(dir) {
+        try {
+            const files = await fs.readdir(dir);
+            return files
+                .filter(f => f.endsWith('.md'))
+                .map(f => f.replace('.md', ''));
+        }
+        catch {
+            return ['(unable to read directory)'];
+        }
     }
 }
