@@ -137,6 +137,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.1] - 2025-10-11 - Bugfix: Flexible Template Names ✅
+
+### Fixed
+- **Template filename flexibility**
+  - Added pattern-based template discovery with fallback logic
+  - Now supports multiple naming conventions:
+    - `Template - [Name].md` (original, backward compatible)
+    - `template-[name].md` (lowercase-dash, common convention)
+    - `[name].md` (simple naming)
+  - Priority order: config.json → current convention → lowercase → simple
+- **Better error messages**
+  - Shows all patterns tried for debugging
+  - Lists available template files in directory
+  - Explains supported naming conventions
+  - Helpful guidance for users
+
+### Technical Details
+- Zero breaking changes - fully backward compatible
+- Graceful fallback through multiple patterns
+- Better UX with informative error messages
+
+**Issue:** Users forced to use exact `Template - Name.md` format
+**Resolution:** Pattern-based search supports common conventions
+**Time Invested**: 30 minutes
+
+---
+
 ## [Unreleased] - Phase 3: Intelligence Features (Remaining)
 
 ### Planned
